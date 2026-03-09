@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Menu, Hexagon, UserCircle, MoreVertical, X, ChevronDown, Check, Loader2, MousePointer2 } from 'lucide-react';
 
-export const MockWindowAnimation = () => {
+export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
     // --- STATE ---
     const [seqIndex, setSeqIndex] = useState(0);
 
@@ -160,11 +160,13 @@ export const MockWindowAnimation = () => {
 
     useEffect(() => {
         // We delay the first run slightly to ensure refs are firmly attached and CSS layouts complete
+        if (!ready) return;
+
         const t = setTimeout(() => {
             runSequence();
         }, 500);
         return () => clearTimeout(t);
-    }, [seqIndex]);
+    }, [seqIndex, ready]);
 
     return (
         <div ref={containerRef} className="mock-window-container apple-liquid-glass" style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px' }}>

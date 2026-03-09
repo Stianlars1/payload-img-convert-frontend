@@ -45,12 +45,37 @@ const groupedFeatures = ALL_FEATURES.reduce((acc, feature) => {
 
 export default function Home() {
   const containerRef = useRef<HTMLElement>(null);
+  const mockWindowWrapperRef = useRef<HTMLDivElement>(null);
   const [activeFeatureGroup, setActiveFeatureGroup] = useState<string>(Object.keys(groupedFeatures)[0]);
+  const [mockWindowReady, setMockWindowReady] = useState(false);
 
   useGSAP(() => {
     if (containerRef.current) {
       const sections = gsap.utils.toArray<HTMLElement>('section', containerRef.current);
       sections.forEach(section => createReveal(section));
+    }
+
+    if (mockWindowWrapperRef.current) {
+      gsap.fromTo(mockWindowWrapperRef.current, {
+        scale: 0.8,
+        rotationX: 30, // tilt back 30 degrees
+        y: 100,
+        transformPerspective: 1400,
+        opacity: 0,
+      }, {
+        scale: 1.15,
+        rotationX: 0,
+        y: 0,
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: mockWindowWrapperRef.current,
+          start: "top 95%", // starts when the top of the window hits 95% of the viewport (near bottom)
+          end: "top 55%",   // ends when it reaches 55% from the top (15% earlier)
+          scrub: 1,         // smooth scrubbing catching up
+        },
+        onComplete: () => setMockWindowReady(true)
+      });
     }
   }, { scope: containerRef });
 
@@ -104,9 +129,10 @@ export default function Home() {
         {/* Floating Mock Window UI */}
         <section
           className="mock-window-section"
+          style={{ perspective: "1400px" }}
         >
-          <div data-reveal>
-            <MockWindowAnimation />
+          <div className="mock-window-wrapper" ref={mockWindowWrapperRef} style={{ transformOrigin: "top center", willChange: "transform, opacity" }}>
+            <MockWindowAnimation ready={mockWindowReady} />
           </div>
         </section>
 
