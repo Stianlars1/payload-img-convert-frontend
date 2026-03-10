@@ -1,0 +1,16 @@
+# payload-img-convert plugin
+> The developer-first image optimization pipeline for Payload CMS v3. Automatic WebP, AVIF, PNG & JPEG conversion with zero setup required.
+
+## Main sections
+- [Home](/): Feature overview, code examples, and value proposition for the payload-img-convert plugin.
+
+## Key facts
+- Converts uploads to WebP, AVIF, PNG, or JPEG on create/update within Payload CMS.
+- Provides per-image format selection via the Payload admin sidebar.
+- Fallback to global defaultFormat.
+- Configurable quality globally and per-format.
+- Preserves aspect ratios without enlargement by default (`fit: 'inside'`, `withoutEnlargement: true`).
+- Skips SVG and GIF automatically to preserve animations and vectors.
+- Seamlessly integrates before other Payload beforeOperation hooks.
+- Leverages Payload's native managed Sharp instance, requiring no extra heavyweight dependencies.
+- Open Source and MIT Licensed by Stian Larsen.

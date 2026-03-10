@@ -2,7 +2,9 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Menu, Hexagon, UserCircle, MoreVertical, X, ChevronDown, Check, Loader2, MousePointer2 } from 'lucide-react';
+import { Menu, Hexagon, UserCircle, MoreVertical, X, ChevronDown, Check, Loader2, MousePointer2 } from 'lucide-react';
+import styles from './MockWindowAnimation.module.css';
+import { CopyButton } from './CopyButton';
 
 export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
     // --- STATE ---
@@ -10,7 +12,6 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
 
     // UI State
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [dropdownHover, setDropdownHover] = useState(false);
     const [selectedFormat, setSelectedFormat] = useState('Original Format');
     const [altText, setAltText] = useState('');
     const [captionText, setCaptionText] = useState('');
@@ -40,14 +41,27 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
         }
     };
 
-    // Helper to compute exact center relative to the container
+    // Helper to compute exact center relative to the container by traversing offsetParent
     const getRefCenter = (targetRef: React.RefObject<HTMLElement | null>, offsetX = 0, offsetY = 0): { x: number, y: number } => {
         if (!containerRef.current || !targetRef.current) return { x: 0, y: 0 };
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const targetRect = targetRef.current.getBoundingClientRect();
+
+        let el: HTMLElement | null = targetRef.current;
+        let x = 0;
+        let y = 0;
+
+        while (el && el !== containerRef.current) {
+            x += el.offsetLeft;
+            y += el.offsetTop;
+            el = el.offsetParent as HTMLElement | null;
+            if (el && el !== containerRef.current) {
+                x += el.clientLeft;
+                y += el.clientTop;
+            }
+        }
+
         return {
-            x: (targetRect.left - containerRect.left) + (targetRect.width / 2) + offsetX,
-            y: (targetRect.top - containerRect.top) + (targetRect.height / 2) + offsetY
+            x: x + (targetRef.current.offsetWidth / 2) + offsetX,
+            y: y + (targetRef.current.offsetHeight / 2) + offsetY
         };
     };
 
@@ -166,10 +180,11 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
             runSequence();
         }, 500);
         return () => clearTimeout(t);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [seqIndex, ready]);
 
     return (
-        <div ref={containerRef} className="mock-window-container apple-liquid-glass" style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px' }}>
+        <div ref={containerRef} className={`${styles.mockWindowContainer} apple-liquid-glass`} style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px' }}>
 
             {/* --- Simulated Cursor --- */}
             <motion.div
@@ -206,31 +221,31 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
             </motion.div>
 
             {/* --- Payload Top Nav --- */}
-            <div className="payload-header-top">
-                <div className="payload-header-top-left">
-                    <Menu size={16} color="var(--text-muted)" />
-                    <Hexagon size={18} color="var(--text-primary)" />
-                    <span className="mono" style={{ color: 'var(--text-muted)', fontSize: '12px' }}>/ Media / <span style={{ color: 'var(--text-primary)' }}>{selectedFormat === 'WebP' ? 'hero-banner.webp' : 'hero-banner.jpeg'}</span></span>
+            <div className={styles.payloadHeaderTop}>
+                <div className={styles.payloadHeaderTopLeft}>
+                    <Menu size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                    <Hexagon size={18} color="var(--text-primary)" style={{ flexShrink: 0 }} />
+                    <span className="mono" style={{ color: 'var(--text-muted)', fontSize: '12px', whiteSpace: 'normal', wordBreak: 'break-all' }}>/ Media / <span style={{ color: 'var(--text-primary)' }}>{selectedFormat === 'WebP' ? 'hero-banner.webp' : 'hero-banner.jpeg'}</span></span>
                 </div>
                 <UserCircle size={20} color="var(--text-muted)" />
             </div>
 
             {/* --- Payload Title Row --- */}
-            <div className="payload-header-title">
-                <h2 className="payload-title-text">{selectedFormat === 'WebP' ? 'hero-banner.webp' : 'hero-banner.jpeg'}</h2>
+            <div className={styles.payloadHeaderTitle}>
+                <h2 className={styles.payloadTitleText}>{selectedFormat === 'WebP' ? 'hero-banner.webp' : 'hero-banner.jpeg'}</h2>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="payload-btn">Edit</button>
-                    <button className="payload-btn">API</button>
+                    <button className={styles.payloadBtn}>Edit</button>
+                    <button className={styles.payloadBtn}>API</button>
                 </div>
             </div>
 
             {/* --- Payload Meta Row --- */}
-            <div className="payload-header-meta">
-                <div className="mono" style={{ display: 'flex', gap: '16px' }}>
+            <div className={styles.payloadHeaderMeta}>
+                <div className="mono" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                     <span>Last Modified: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Just now</span></span>
                     <span>Created: <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>March 7th 2026</span></span>
                 </div>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
 
                     <AnimatePresence>
                         {saveState === 'success' && (
@@ -245,7 +260,7 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
                         )}
                     </AnimatePresence>
 
-                    <button ref={saveBtnRef} className="payload-btn" style={{
+                    <button ref={saveBtnRef} className={styles.payloadBtn} style={{
                         display: 'flex', alignItems: 'center', gap: '6px',
                         background: saveState === 'saving' || saveState === 'success' ? 'var(--text-primary)' : 'rgba(255,255,255,0.1)',
                         color: saveState === 'saving' || saveState === 'success' ? '#000' : 'var(--text-primary)',
@@ -253,60 +268,60 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
                     }}>
                         {saveState === 'saving' ? <Loader2 size={14} className="animate-spin" /> : 'Save'}
                     </button>
-                    <button className="payload-btn"><MoreVertical size={14} /></button>
+                    <button className={styles.payloadBtn}><MoreVertical size={14} /></button>
                 </div>
             </div>
 
             {/* --- Payload Body Split --- */}
-            <div className="payload-body">
-                <div className="payload-main">
+            <div className={styles.payloadBody}>
+                <div className={styles.payloadMain}>
                     {/* Image Card */}
-                    <div className="payload-image-card">
-                        <div className="payload-image-preview">
+                    <div className={styles.payloadImageCard}>
+                        <div className={styles.payloadImagePreview}>
                             <div style={{ background: '#e0e0e0', width: '80px', height: '60px' }} />
                         </div>
-                        <div className="payload-image-info">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 600 }}>
-                                {selectedFormat === 'WebP' ? 'hero-banner.webp' : 'hero-banner.jpeg'} <Copy size={12} color="var(--text-muted)" />
+                        <div className={styles.payloadImageInfo}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 600, flexWrap: 'wrap', wordBreak: 'break-all' }}>
+                                <span>{selectedFormat === 'WebP' ? 'hero-banner.webp' : 'hero-banner.jpeg'}</span> <CopyButton text={selectedFormat === 'WebP' ? 'hero-banner.webp' : 'hero-banner.jpeg'} size={12} style={{ flexShrink: 0, color: 'var(--text-muted)' }} />
                             </div>
-                            <div className="mono" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                            <div className="mono" style={{ fontSize: '12px', color: 'var(--text-muted)', wordBreak: 'break-all' }}>
                                 {saveState === 'success' && selectedFormat === 'WebP' ? '465KB - 6000x4410 - image/webp' : '1.3MB - 6000x4410 - image/jpeg'}
                             </div>
-                            <button className="payload-btn" style={{ width: 'fit-content', marginTop: '4px' }}>Edit Image</button>
+                            <button className={styles.payloadBtn} style={{ width: 'fit-content', marginTop: '4px' }}>Edit Image</button>
                         </div>
                     </div>
 
                     {/* Form Fields */}
-                    <div className="payload-field-group">
-                        <span className="payload-label">Alternativ tekst <span style={{ color: 'var(--accent-primary)' }}>*</span></span>
-                        <div ref={altInputRef} className="payload-input" style={{
+                    <div className={styles.payloadFieldGroup}>
+                        <span className={styles.payloadLabel}>Alt text <span style={{ color: 'var(--accent-primary)' }}>*</span></span>
+                        <div ref={altInputRef} className={styles.payloadInput} style={{
                             borderColor: activeField === 'alt' ? 'var(--accent-primary)' : 'rgba(255,255,255,0.1)',
-                            minHeight: '44px', display: 'flex', alignItems: 'center'
+                            minHeight: '44px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', wordBreak: 'break-all'
                         }}>
-                            {altText}
+                            <span>{altText}</span>
                             {activeField === 'alt' && <motion.span animate={{ opacity: [0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }}>|</motion.span>}
                         </div>
                     </div>
 
-                    <div className="payload-field-group">
-                        <span className="payload-label">Bildetekst</span>
-                        <div ref={captionInputRef} className="payload-input" style={{
+                    <div className={styles.payloadFieldGroup}>
+                        <span className={styles.payloadLabel}>Image description text</span>
+                        <div ref={captionInputRef} className={styles.payloadInput} style={{
                             borderColor: activeField === 'cap' ? 'var(--accent-primary)' : 'rgba(255,255,255,0.1)',
-                            minHeight: '44px', display: 'flex', alignItems: 'center'
+                            minHeight: '44px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', wordBreak: 'break-all'
                         }}>
-                            {captionText}
+                            <span>{captionText}</span>
                             {activeField === 'cap' && <motion.span animate={{ opacity: [0, 1] }} transition={{ repeat: Infinity, duration: 0.8 }}>|</motion.span>}
                         </div>
                     </div>
                 </div>
 
                 {/* Sidebar */}
-                <div className="payload-sidebar" style={{ position: 'relative' }}>
-                    <span className="payload-label">Convert to Format</span>
+                <div className={styles.payloadSidebar} style={{ position: 'relative' }}>
+                    <span className={styles.payloadLabel}>Convert to Format</span>
 
                     <div style={{ position: 'relative' }}>
                         {/* The Dropdown Input */}
-                        <div ref={formatDropdownRef} className="payload-select" style={{ borderColor: dropdownHover ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.1)' }}>
+                        <div ref={formatDropdownRef} className={styles.payloadSelect} style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
                             <span>{selectedFormat}</span>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 {selectedFormat !== 'Original Format' && <X size={14} color="var(--text-muted)" />}
@@ -341,7 +356,7 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
                     {/* Resize panel */}
                     <div style={{ marginTop: '32px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                            <span className="payload-label" style={{ marginBottom: 0 }}>Resize Image</span>
+                            <span className={styles.payloadLabel} style={{ marginBottom: 0 }}>Resize Image</span>
                             <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px', color: 'var(--text-dim)' }}>(active)</span>
                         </div>
 
@@ -355,19 +370,19 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
                             <p style={{ color: '#ffc107', fontSize: '12px', margin: '0 0 8px 0', lineHeight: 1.4 }}>
                                 Image is 6000x4410px — consider resizing for better web performance.
                             </p>
-                            <button className="payload-btn" style={{ fontSize: '11px', padding: '4px 8px', background: 'rgba(255,193,7,0.2)', color: '#ffb300', borderColor: 'rgba(255,193,7,0.4)', marginTop: '4px' }}>
+                            <button className={styles.payloadBtn} style={{ fontSize: '11px', padding: '4px 8px', background: 'rgba(255,193,7,0.2)', color: '#ffb300', borderColor: 'rgba(255,193,7,0.4)', marginTop: '4px' }}>
                                 Auto-fill max width (2500px)
                             </button>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                             <div>
-                                <span className="payload-label" style={{ fontSize: '11px' }}>Max Width (px)</span>
-                                <div className="payload-input" style={{ minHeight: '36px', display: 'flex', alignItems: 'center' }}>2500</div>
+                                <span className={styles.payloadLabel} style={{ fontSize: '11px' }}>Max Width (px)</span>
+                                <div className={styles.payloadInput} style={{ minHeight: '36px', display: 'flex', alignItems: 'center' }}>2500</div>
                             </div>
                             <div>
-                                <span className="payload-label" style={{ fontSize: '11px' }}>Max Height (px)</span>
-                                <div className="payload-input" style={{ minHeight: '36px', display: 'flex', alignItems: 'center', color: 'var(--text-dim)' }}>auto</div>
+                                <span className={styles.payloadLabel} style={{ fontSize: '11px' }}>Max Height (px)</span>
+                                <div className={styles.payloadInput} style={{ minHeight: '36px', display: 'flex', alignItems: 'center', color: 'var(--text-dim)' }}>auto</div>
                             </div>
                         </div>
                         <p style={{ fontSize: '11px', color: 'var(--text-dim)', margin: '8px 0 0 0' }}>Aspect ratio preserved, no upscaling.</p>
@@ -380,7 +395,7 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
                                 initial={{ opacity: 0, y: 4 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0 }}
-                                className="payload-saved-text"
+                                className={styles.payloadSavedText}
                             >
                                 Saved 64% (1.3 MB &rarr; 465 KB)
                             </motion.div>
@@ -390,4 +405,4 @@ export const MockWindowAnimation = ({ ready }: { ready: boolean }) => {
             </div>
         </div>
     );
-}; // we need to define `dropdownHover` state slightly differently or remove it since it's missing in state hook
+};

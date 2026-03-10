@@ -1,4 +1,3 @@
-import { dataString } from "./data"
 
 export const LiquidAss = () => {
     return (

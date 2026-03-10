@@ -1,0 +1,59 @@
+/* Base interactive components */
+.monolithElement {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.monolithCard {
+    border-radius: var(--radius-lg);
+}
+
+/* Monolith Beam - interactive border gradient on hover */
+.monolithElement::before,
+.monolithCard::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--border-hover);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.monolithElement:hover::before,
+.monolithCard:hover::before {
+    opacity: 1;
+}
+
+.monolithElement:hover,
+.monolithCard:hover {
+    border-color: transparent;
+}
+
+/* Flashlight Hover effect implementation */
+.flashlightLayer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 0, 51, 0.1), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.monolithElement:hover .flashlightLayer,
+.monolithCard:hover .flashlightLayer {
+    opacity: 1;
+}

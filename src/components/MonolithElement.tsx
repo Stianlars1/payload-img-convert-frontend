@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
+import styles from "./MonolithElement.module.css";
 
 interface MonolithElementProps extends HTMLMotionProps<"div"> {
     children?: React.ReactNode;
@@ -26,7 +27,7 @@ export const MonolithElement = ({
         });
     };
 
-    const cssClass = asCard ? "monolith-card monolith-element" : "monolith-element";
+    const cssClass = asCard ? `${styles.monolithCard} ${styles.monolithElement}` : styles.monolithElement;
 
     return (
         <motion.div
@@ -37,13 +38,13 @@ export const MonolithElement = ({
             className={`${cssClass} ${className}`}
             style={{
                 ...props.style,
-                // @ts-ignore
+                // @ts-expect-error React 19 supports custom css properties
                 "--mouse-x": `${position.x}px`,
                 "--mouse-y": `${position.y}px`,
             }}
             {...props}
         >
-            <div className="flashlight-layer" />
+            <div className={styles.flashlightLayer} />
             <div className="relative z-10 w-full h-full">{children}</div>
         </motion.div>
     );

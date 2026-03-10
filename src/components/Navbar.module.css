@@ -1,0 +1,91 @@
+.navGlass {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 500000000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+
+
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -200;
+        background: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+        backdrop-filter: url(#glass-distortion-large) blur(3px);
+    }
+}
+
+.navBrand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: -10px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        z-index: -50;
+        backdrop-filter: url(#glass-distortion-round) blur(8px);
+    }
+
+}
+
+.navLogoBox {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--bg-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-subtle);
+}
+
+.navLinks {
+    display: none;
+    align-items: center;
+    gap: 32px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+
+    @media (min-width: 768px) {
+        display: flex;
+    }
+
+    & a:hover {
+        color: var(--text-primary);
+        transition: color 0.2s;
+    }
+}
+
+.navActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: -10px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.025);
+        z-index: -50;
+        backdrop-filter: url(#glass-distortion-round) blur(4px);
+    }
+
+}
