@@ -1,0 +1,4 @@
+public/
+.git/
+.next/
+node_modules/

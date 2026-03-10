@@ -3,7 +3,7 @@
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
-  padding-top: 128px;
+  padding-top: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -162,7 +162,7 @@
   transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
 
-  opacity: 0;
+  opacity: 0.2;
   transform: perspective(1440px) translate3d(0px, 58.8355px, 100px) rotateX(30deg) scale(0.5);
 
   &::after {
@@ -314,6 +314,8 @@
 .allFeaturesContainer {
   display: flex;
   flex-direction: column;
+  isolation: isolate;
+  z-index: 1;
 }
 
 .categorySection {
@@ -327,11 +329,77 @@
     align-items: flex-start;
     gap: 80px;
   }
+
+
+  .featruesAssetsWrapper {
+    position: absolute;
+    padding: 0;
+    width: 100%;
+    max-width: 1540px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: auto;
+    overflow: visible;
+    display: flex;
+    justify-content: flex-end;
+    perspective: 2000px;
+    mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0) 80%);
+    opacity: 0.4;
+    z-index: -100;
+
+    @media (max-width: 900px) {
+      width: calc(135vw);
+      top: -250px;
+    }
+
+    @media (min-width: 1280) {
+      width: calc(120%);
+      top: -250px;
+    }
+
+  }
+
+  .featruesAssetsWrapper[data-is-left="true"] {
+    @media (min-width: 900px) {
+      justify-content: flex-start;
+    }
+  }
+
+
+  .featruesAssetsWrapper[data-is-left="true"] .categoryAsset {
+
+    transform: rotate3d(20, -5, 5, -40deg);
+  }
+
+
+  .categoryImage {}
+
+  .categoryVideo {}
+
+  .categoryAsset {
+
+    /* 3d */
+    transform: rotate3d(-20, 5, -50, 40deg);
+    object-fit: contain;
+    width: auto;
+    height: 200px;
+    mask-image: radial-gradient(at center, rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0) 80%);
+
+    @media (max-width: 900px) {
+      height: 400px;
+      transform: rotate3d(150, -250, 2, 60deg) !important;
+    }
+  }
 }
 
 .categoryStickyHeader {
   margin-bottom: 32px;
   text-align: left;
+  z-index: -100;
+  isolation: isolate;
+  position: relative;
 
   @media (min-width: 900px) {
     position: sticky;
@@ -341,6 +409,7 @@
     margin-bottom: 0;
     align-self: flex-start;
   }
+
 }
 
 .categoryTitle {
@@ -353,6 +422,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  z-index: 10;
 }
 
 .categoryScrollContent {
@@ -361,10 +431,13 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  z-index: 10;
 }
 
 /* Feature Row Cards */
 .featureRowCard {
+
+  z-index: 10000;
   display: flex;
   align-items: flex-start;
   gap: 20px;
@@ -372,7 +445,7 @@
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
-  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.3s ease, backgrounsd 0.3s ease, border-color 0.3s ease;
 }
 
 .featureRowCard:hover {
@@ -644,53 +717,54 @@
   border-top: 1px solid rgba(255, 0, 51, 0.15);
   padding: 64px 24px;
   background: transparent;
-}
+  backdrop-filter: url(#glass-distortion-large) blur(21px);
 
-.footerGrid {
-  max-width: 1000px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 32px;
-}
-
-.fgBrand {
-  & p {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin-top: 16px;
-    line-height: 1.5;
-    max-width: 250px;
-  }
-}
-
-.fgColumn {
-  & h4 {
-    font-size: 14px;
-    margin-bottom: 24px;
-    color: var(--text-primary);
+  .footerGrid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 32px;
   }
 
-  & a {
-    display: block;
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-
-    &:hover {
-      color: var(--text-primary);
+  .fgBrand {
+    & p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 16px;
+      line-height: 1.5;
+      max-width: 250px;
     }
   }
-}
 
-.mutedP {
-  font-size: 14px;
-  color: var(--text-dim);
-}
+  .fgColumn {
+    & h4 {
+      font-size: 14px;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+
+    & a {
+      display: block;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+
+      &:hover {
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .mutedP {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
 
 
-@media screen and (max-width: 1280px) {
-  .mockWindowSection {
-    max-width: 80%;
+  @media screen and (max-width: 1280px) {
+    .mockWindowSection {
+      max-width: 80%;
+    }
   }
 }

@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# payload-img-convert — Marketing Website
+
+The official landing page for [payload-img-convert](https://github.com/stianlars1/payload-img-convert), an automatic image conversion and resizing plugin for Payload CMS v3.
+
+**Live:** [payload-img-convert.vercel.app](https://payload-img-convert.vercel.app)
+
+---
+
+## What This Site Delivers
+
+A single-page marketing site showcasing the plugin's value proposition, features, and developer experience. Sections include:
+
+- **Hero** — Tagline, install command with copy-to-clipboard, WebGL animated background (Unicorn Studio)
+- **Mock Window** — Scroll-animated 3D perspective reveal of the plugin's admin UI
+- **Bento Grid** — Four feature cards with inline animations (format morphing, resize preview, admin dropdown, compression chart)
+- **Full Feature List** — 25 features grouped by category (Conversion, Resize, Admin UI, Safety, Architecture) in a Raycast-inspired layout
+- **Code Example** — Syntax-highlighted `payload.config.ts` snippet with copy button
+- **Footer** — Links to GitHub, npm, Payload CMS, and maintainer info
+
+## Tech Stack
+
+| Layer        | Technology                                     |
+| ------------ | ---------------------------------------------- |
+| Framework    | [Next.js 16](https://nextjs.org) (App Router)  |
+| React        | React 19                                       |
+| Language     | TypeScript 5                                   |
+| Animations   | GSAP 3 + ScrollTrigger, Framer Motion 12       |
+| Icons        | Lucide React                                   |
+| Hero Effect  | Unicorn Studio (self-hosted SDK)                |
+| Fonts        | Geist Sans & Geist Mono (next/font)            |
+| Styling      | CSS Modules + global CSS custom properties      |
+| Deployment   | Vercel                                         |
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── layout.tsx          # Root layout, metadata, JSON-LD, fonts
+│   ├── page.tsx            # Main landing page (client component)
+│   ├── page.module.css     # Page styles
+│   ├── globals.css         # Design tokens, resets, global styles
+│   ├── sitemap.ts          # Dynamic XML sitemap
+│   └── robots.ts           # Robots.txt with AI-crawler rules
+├── components/
+│   ├── Navbar.tsx           # Top navigation bar
+│   ├── MonolithElement.tsx  # Glass-morphism card component
+│   ├── MockWindowAnimation.tsx  # 3D admin UI mock window
+│   ├── CopyButton.tsx       # Clipboard copy button
+│   ├── LiquidAss.tsx        # SVG liquid glass background filter
+│   ├── data.ts              # Shared data constants
+│   └── animations/
+│       ├── FormatMorphAnimation.tsx
+│       ├── ResizePreviewAnimation.tsx
+│       ├── AdminUIDropdownAnimation.tsx
+│       ├── ModernStandardChartAnimation.tsx
+│       └── AnimatedFeatureIcon.tsx
+└── lib/
+    └── motion.ts            # GSAP utilities and reveal helpers
+public/
+├── promo/                   # Marketing graphics (dark, transparent, glass variants)
+├── unicornStudio.umd.js    # Self-hosted Unicorn Studio SDK
+├── llms.txt                # AI/LLM context file
+└── icon.png                # Favicon
+```
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The dev server runs at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## SEO & Discoverability
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Full Open Graph and Twitter Card metadata
+- JSON-LD `SoftwareApplication` structured data
+- Auto-generated `sitemap.xml` and `robots.txt`
+- `llms.txt` for AI search engine context
+- AI-crawler-aware robot rules (allows search bots, blocks training crawlers)
 
-## Learn More
+## The Plugin
 
-To learn more about Next.js, take a look at the following resources:
+This site promotes **payload-img-convert** — drop-in image optimization for Payload CMS v3:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+import { imageConverterPlugin } from 'payload-img-convert'
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+imageConverterPlugin({
+  collections: ['media'],
+  defaultFormat: 'webp',
+  quality: 80,
+  maxWidth: 1920,
+})
+```
 
-## Deploy on Vercel
+- Automatic WebP/AVIF/PNG/JPEG conversion on upload
+- Aspect-ratio preserving resize with no upscaling
+- Admin UI format selector with compression savings display
+- Graceful fallback — originals preserved on failure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**npm:** [payload-img-convert](https://npmjs.com/package/payload-img-convert) | **GitHub:** [stianlars1/payload-img-convert](https://github.com/stianlars1/payload-img-convert)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT — [Stian Larsen](https://stianlarsen.com)
