@@ -2,7 +2,7 @@
 
 The official landing page for [payload-img-convert](https://github.com/stianlars1/payload-img-convert), an automatic image conversion and resizing plugin for Payload CMS v3.
 
-**Live:** [payload-img-convert.vercel.app](https://payload-img-convert.vercel.app)
+**Live:** [payload-img-convert-frontend.vercel.app]([https://payload-img-convert.vercel.app](https://payload-img-convert-frontend.vercel.app/))
 
 ---
 
