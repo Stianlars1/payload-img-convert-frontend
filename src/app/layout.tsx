@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LiquidAss } from "@/components/LiquidAss";
 import Image from "next/image";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -91,6 +92,7 @@ export default function RootLayout({
         <LiquidAss />
 
         {children}
+        <Analytics />
       </body>
     </html>
   );
